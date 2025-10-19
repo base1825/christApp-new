@@ -1,50 +1,150 @@
-# Welcome to your Expo app 👋
+## ST10487874
+## Project Overview
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Christoffel’s Menu App is a mobile application built with React Native and Expo that allows a restaurant to manage and display its menu in a simple, interactive way.
 
-## Get started
+The app serves two main user roles:
 
-1. Install dependencies
+1. Chef / Admin
 
-   ```bash
-   npm install
-   ```
+Can add new dishes with a name, description, price, and course type (Starter, Main, Dessert, Drink).
 
-2. Start the app
+Can view all dishes in a list and remove them if needed.
 
-   ```bash
-   npx expo start
-   ```
+2. Guest / Customer
 
-In the output, you'll find options to open the app in a
+Can browse the menu by categories (Starters, Mains, Desserts, Drinks).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Can filter dishes by course to see exactly what they want.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Prerequisites
 
-## Get a fresh project
+Node.js v18 or higher
 
-When you're ready, run:
+npm or yarn
 
-```bash
-npm run reset-project
-```
+Expo CLI
+Check Node and npm versions:
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+in your terminal :node -v or 
+npm -v
 
-## Learn more
 
-To learn more about developing your project with Expo, look at the following resources:
+Install Expo CLI if you haven’t already:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+npm install -g expo
 
-## Join the community
+## Clone the repository:
 
-Join our community of developers creating universal apps.
+git clone <https://github.com/base1825/christApp-new.git>
+cd christApp-new
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+Install dependencies: use
+
+npm install
+
+Start the project:
+
+npx expo start
+
+## Running the App
+
+Press a to open in Android Emulator.
+
+Press i to open in iOS Simulator.
+
+Or scan the QR code with Expo Go on your mobile device.
+## Features
+
+1.Home Screen
+
+Displays menu categories in boxes
+
+Buttons:
+
+Add Menu (requires chef permission) only the chef can access
+
+View Full Menu (go to Filter Menu)
+
+Add Menu
+
+Add a dish with:
+
+Name, Description, Price, Course
+
+Dish is saved in React Context
+
+Back button included
+
+Filter Menu
+
+View all dishes
+
+Filter by course: Starter, Main, Dessert, Drink
+
+Remove dishes
+
+Back button included on each.
+## Data Flow
+
+This app uses React Context to manage the menu data globally across all screens. Here’s how it works in detail:
+MenuContext
+MenuContext.tsx defines a context provider called MenuProvider.
+It holds a menu state, which is an array of dishes. Each dish has:
+
+Functions provided in the context:
+
+addDish(dish: Dish) → Adds a new dish to the menu array
+removeDish(id: string) → Removes a dish by its ID
+
+## Data Flow Between Screens
+
+1.Home Screen
+
+Shows categories (Starter, Main, Dessert, Drink).
+
+Buttons allow navigation to Add Menu or Filter Menu.
+
+Does not directly modify the menu, just displays stats from MenuContext.
+
+2.Add Menu Screen
+
+Uses useMenu() to access addDish.
+
+When the chef fills in the dish form and saves:
+
+addDish adds the new dish to the global menu.
+
+The menu in MenuContext is updated immediately.
+
+3.Filter Menu Screen
+
+Uses useMenu() to access menu and removeDish.
+
+Filters dishes by course using state selectedCourse.
+
+Any newly added dishes from Add Menu appear instantly because they exist in MenuContext.
+
+Removing a dish updates the context, and the screen re-renders automatically.
+## screenshots
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
