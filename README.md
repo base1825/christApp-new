@@ -36,7 +36,7 @@ npm install -g expo
 
 ## Clone the repository:
 
-git clone <>
+git clone <https://github.com/base1825/christApp-new.git>
 cd christApp-new
 
 
@@ -86,7 +86,48 @@ Filter by course: Starter, Main, Dessert, Drink
 Remove dishes
 
 Back button included on each.
+## Data Flow
 
+This app uses React Context to manage the menu data globally across all screens. Here’s how it works in detail:
+MenuContext
+MenuContext.tsx defines a context provider called MenuProvider.
+It holds a menu state, which is an array of dishes. Each dish has:
+
+Functions provided in the context:
+
+addDish(dish: Dish) → Adds a new dish to the menu array
+removeDish(id: string) → Removes a dish by its ID
+
+## Data Flow Between Screens
+
+1.Home Screen
+
+Shows categories (Starter, Main, Dessert, Drink).
+
+Buttons allow navigation to Add Menu or Filter Menu.
+
+Does not directly modify the menu, just displays stats from MenuContext.
+
+2.Add Menu Screen
+
+Uses useMenu() to access addDish.
+
+When the chef fills in the dish form and saves:
+
+addDish adds the new dish to the global menu.
+
+The menu in MenuContext is updated immediately.
+
+3.Filter Menu Screen
+
+Uses useMenu() to access menu and removeDish.
+
+Filters dishes by course using state selectedCourse.
+
+Any newly added dishes from Add Menu appear instantly because they exist in MenuContext.
+
+Removing a dish updates the context, and the screen re-renders automatically.
+## screenshots
 
 
 
