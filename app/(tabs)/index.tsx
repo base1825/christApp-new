@@ -7,7 +7,7 @@ export default function WelcomeScreen() {
   return (
     <View style={styles.container}>
       {/* App Name */}
-      <Text style={styles.title}>Welcome to Christ App</Text>
+      <Text style={styles.title}>Welcome to Christofell's Kitchen</Text>
 
       {/* Continue Button */}
       <Pressable style={styles.button} onPress={() => router.push('/home')}>
