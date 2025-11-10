@@ -9,6 +9,7 @@ export type Dish = {
   price: number;
 };
 
+
 type MenuContextType = {
   menu: Dish[];
   addDish: (dish: Dish) => void;
