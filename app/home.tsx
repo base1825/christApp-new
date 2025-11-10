@@ -1,30 +1,46 @@
-import { useRouter } from 'expo-router';
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const menuCategories = [
-  { id: '1', name: 'Starters', avgPrice: '$8.50' },
-  { id: '2', name: 'Mains', avgPrice: '$15.20' },
-  { id: '3', name: 'Desserts', avgPrice: '$6.75' },
-  { id: '4', name: 'Drinks', avgPrice: '$4.10' },
+  { id: '1', name: 'Starters' },
+  { id: '2', name: 'Mains' },
+  { id: '3', name: 'Desserts' },
+  { id: '4', name: 'Drinks' },
 ];
 
-export default function Home() {
-  const router = useRouter();
+export default function HomeScreen() {
+  const [name, setName] = React.useState('');
+  const [description, setDescription] = React.useState('');
+  const [course, setCourse] = React.useState('Main');
+  const [price, setPrice] = React.useState('');
+  const [menuList, setMenuList] = React.useState<MenuItem[]>([]);
 
-  const handleAddMenu = () => {
-    Alert.alert(
-      'Chef Access',
-      'Are you the chef?',
-      [
-        { text: 'No', onPress: () => router.push('/filter') },
-        { text: 'Yes', onPress: () => router.push('/addmenu') },
-      ]
-    );
+  const addMenuItem = () => {
+    if (!name.trim() || !price.trim()) return;
+    const newItem: MenuItem = {
+      id: Date.now().toString(),
+      name,
+      description,
+      course,
+      price,
+    };
+    setMenuList([...menuList, newItem]);
+    setName('');
+    setDescription('');
+    setCourse('Main');
+    setPrice('');
   };
 
+  const cancelMenu = () => {
+    setMenuList([]); // clear all dishes
+  };
+
+  // Calculate total price
+  const total = menuList.reduce((sum, item) => sum + parseFloat(item.price || '0'), 0);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Christoffel’s Menu</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>🍽️ Christ App Menu</Text>
 
       {/* Category boxes */}
       <FlatList
@@ -35,19 +51,23 @@ export default function Home() {
         renderItem={({ item }) => (
           <Pressable
             style={styles.card}
-            onPress={() => router.push(`/filter?course=${item.name.slice(0, -1)}`)}
+            onPress={() => {
+              if (item.name === 'Starters') router.push('/filter?course=Starter');
+              if (item.name === 'Mains') router.push('/filter?course=Main');
+              if (item.name === 'Desserts') router.push('/filter?course=Dessert');
+              if (item.name === 'Drinks') router.push('/filter?course=Drink');
+            }}
           >
             <Text style={styles.cardText}>{item.name}</Text>
-            <Text style={styles.averageText}>Avg Price: {item.avgPrice}</Text>
           </Pressable>
         )}
       />
 
-      {/* Buttons at bottom */}
-      <View style={styles.buttonsContainer}>
-        <Pressable style={styles.button} onPress={handleAddMenu}>
-          <Text style={styles.buttonText}>Add Menu</Text>
-        </Pressable>
+      {/* Buttons Row */}
+      <View style={styles.actionRow}>
+        <TouchableOpacity style={[styles.actionButton, styles.addButton]} onPress={addMenuItem}>
+          <Text style={styles.actionText}>Add Dish</Text>
+        </TouchableOpacity>
 
         <Pressable
           style={[styles.button, { backgroundColor: '#1E90FF' }]}
@@ -55,11 +75,33 @@ export default function Home() {
         >
           <Text style={styles.buttonText}>View Full Menu</Text>
         </Pressable>
-        <Pressable style={[styles.bottomButton, { backgroundColor: '#555' }]} onPress={() => router.back()}>
-                  <Text style={styles.bottomButtonText}>⬅ Back</Text>
-                </Pressable>
       </View>
-    </View>
+
+      {/* Menu List */}
+      <Text style={styles.subtitle}>Menu List</Text>
+      {menuList.length === 0 ? (
+        <Text style={styles.emptyText}>No dishes added yet.</Text>
+      ) : (
+        <FlatList
+          data={menuList}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.menuCard}>
+              <Text style={styles.menuName}>{item.name} - R{item.price}</Text>
+              <Text style={styles.menuCourse}>{item.course}</Text>
+              {item.description ? <Text style={styles.menuDescription}>{item.description}</Text> : null}
+            </View>
+          )}
+        />
+      )}
+
+      {/* Total Section */}
+      {menuList.length > 0 && (
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalText}>Total: R{total.toFixed(2)}</Text>
+        </View>
+      )}
+    </ScrollView>
   );
 }
 
@@ -68,7 +110,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   card: {
     width: '48%',
-    backgroundColor: '#e2c462ff',
+    backgroundColor: '#f4f4f4',
     borderRadius: 15,
     paddingVertical: 40,
     alignItems: 'center',
@@ -80,23 +122,28 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   cardText: { fontSize: 18, fontWeight: '600', color: '#333' },
-  averageText: { fontSize: 14, color: '#555', marginTop: 8 },
   buttonsContainer: { marginTop: 25, width: '100%', alignItems: 'center' },
   button: {
     backgroundColor: 'green',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 15,
-    width: '65%',
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  menuName: { fontSize: 18, fontWeight: 'bold', marginBottom: 5 },
+  menuCourse: { fontSize: 14, fontStyle: 'italic', color: '#666', marginBottom: 5 },
+  menuDescription: { fontSize: 14, color: '#333' },
+
+  totalContainer: {
+    marginTop: 15,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: '#ffffffaa',
     alignItems: 'center',
   },
   buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  bottomButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 8,
-    marginTop: 8,
-    alignItems: 'center',
-  },
-  bottomButtonText: { color: '#fff', fontWeight: '600', fontSize: 14 },
 });
