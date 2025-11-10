@@ -2,10 +2,10 @@ import { useRouter } from 'expo-router';
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 const menuCategories = [
-  { id: '1', name: 'Starters' },
-  { id: '2', name: 'Mains' },
-  { id: '3', name: 'Desserts' },
-  { id: '4', name: 'Drinks' },
+  { id: '1', name: 'Starters', avgPrice: '$8.50' },
+  { id: '2', name: 'Mains', avgPrice: '$15.20' },
+  { id: '3', name: 'Desserts', avgPrice: '$6.75' },
+  { id: '4', name: 'Drinks', avgPrice: '$4.10' },
 ];
 
 export default function Home() {
@@ -35,14 +35,10 @@ export default function Home() {
         renderItem={({ item }) => (
           <Pressable
             style={styles.card}
-            onPress={() => {
-              if (item.name === 'Starters') router.push('/filter?course=Starter');
-              if (item.name === 'Mains') router.push('/filter?course=Main');
-              if (item.name === 'Desserts') router.push('/filter?course=Dessert');
-              if (item.name === 'Drinks') router.push('/filter?course=Drink');
-            }}
+            onPress={() => router.push(`/filter?course=${item.name.slice(0, -1)}`)}
           >
             <Text style={styles.cardText}>{item.name}</Text>
+            <Text style={styles.averageText}>Avg Price: {item.avgPrice}</Text>
           </Pressable>
         )}
       />
@@ -59,6 +55,9 @@ export default function Home() {
         >
           <Text style={styles.buttonText}>View Full Menu</Text>
         </Pressable>
+        <Pressable style={[styles.bottomButton, { backgroundColor: '#555' }]} onPress={() => router.back()}>
+                  <Text style={styles.bottomButtonText}>⬅ Back</Text>
+                </Pressable>
       </View>
     </View>
   );
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   card: {
     width: '48%',
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#e2c462ff',
     borderRadius: 15,
     paddingVertical: 40,
     alignItems: 'center',
@@ -81,6 +80,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   cardText: { fontSize: 18, fontWeight: '600', color: '#333' },
+  averageText: { fontSize: 14, color: '#555', marginTop: 8 },
   buttonsContainer: { marginTop: 25, width: '100%', alignItems: 'center' },
   button: {
     backgroundColor: 'green',
@@ -91,4 +91,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  bottomButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    marginTop: 8,
+    alignItems: 'center',
+  },
+  bottomButtonText: { color: '#fff', fontWeight: '600', fontSize: 14 },
 });
